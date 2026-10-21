@@ -8,21 +8,22 @@
 - [x] Documentar o esquema relacional inicial.
 - [x] Adicionar workflow Maven CI.
 
-## Fase 2 — Migração de persistência
-- [x] Adicionar driver PostgreSQL e Flyway.
-- [x] Criar migração SQL versionada inicial.
-- [x] Implementar persistência com SQL explícito via Spring JDBC.
-- [x] Remover dependência de JPA/Hibernate e H2 do runtime.
-- [x] Adicionar testes de integração da camada de serviço usando H2 somente no perfil de testes.
-- [x] Documentar execução local e manter os contratos HTTP existentes.
-- [ ] Confirmar execução verde do build/testes no GitHub Actions.
-- [ ] Validar a aplicação contra um PostgreSQL real e planejar a importação de dados legados H2, se existirem.
+## Fase 2 — Persistência PostgreSQL
+- [x] Adicionar driver PostgreSQL, Flyway e migração inicial versionada.
+- [x] Implementar SQL explícito via Spring JDBC e remover JPA/Hibernate do runtime.
+- [x] Adicionar testes de integração usando H2 somente no perfil de testes.
+- [x] Confirmar build e testes no GitHub Actions.
+- [ ] Validar em PostgreSQL real e planejar importação de dados legados H2, se existirem.
 
 ## Fase 3 — Identidade e interface
-- [ ] Definir matriz de permissões e fluxo de autenticação.
-- [ ] Implementar Spring Security/JWT com testes de acesso permitido/negado.
-- [ ] Criar contratos de API e integrar a interface com endpoints reais.
-- [ ] Adicionar verificações de segurança ao CI.
+- [x] Implementar login com hash BCrypt e JWT HS256 com expiração.
+- [x] Proteger endpoints `/api/**` com Spring Security e exigir bearer token, exceto login.
+- [x] Adicionar bootstrap administrativo opcional por variáveis de ambiente.
+- [x] Servir frontend pelo Spring Boot e conectar login/listagem/cadastro à API.
+- [x] Adicionar testes de autenticação e autorização básica.
+- [ ] Definir perfis e permissões granulares; todos os usuários atuais têm o mesmo nível de acesso.
+- [ ] Revisar armazenamento do token no navegador e adicionar proteções adicionais contra XSS.
+- [ ] Fazer revisão de segurança e validar fluxo completo em ambiente PostgreSQL real.
 
 ## Fase 4 — Domínios de negócio
 - [ ] Dentistas e equipe de atendimento.
@@ -31,4 +32,4 @@
 - [ ] Faturamento e relatórios após especificação.
 
 ## Critério de conclusão por fase
-A fase só deve ser marcada como concluída quando implementação, testes, documentação e revisão estiverem alinhados. Itens marcados como implementados descrevem o conteúdo do repositório; não significam que a pipeline ou um PostgreSQL real já tenham sido executados nesta sessão.
+Itens marcados como implementados descrevem o conteúdo do repositório; não significam que o ambiente de produção foi validado. A aplicação não deve ser usada com dados reais até concluir a revisão de segurança, segregação de acesso a dados clínicos e validação operacional.

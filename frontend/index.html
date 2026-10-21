@@ -1,46 +1,6 @@
 <!doctype html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Protótipo inicial da interface da Clínica Odontológica Xavier.">
-  <title>Clínica Odontológica Xavier</title>
-  <link rel="stylesheet" href="./styles.css">
-  <script src="./app.js" defer></script>
-</head>
-<body>
-  <aside class="sidebar" aria-label="Navegação principal">
-    <a class="brand" href="#" aria-label="Clínica Xavier - início">
-      <span class="brand-mark" aria-hidden="true">X</span>
-      <span><strong>Clínica Xavier</strong><small>Gestão odontológica</small></span>
-    </a>
-    <nav>
-      <a class="nav-link active" href="#inicio" aria-current="page">Visão geral</a>
-      <a class="nav-link" href="#pacientes">Pacientes <span class="soon">em breve</span></a>
-      <a class="nav-link" href="#agenda">Agenda <span class="soon">em breve</span></a>
-      <a class="nav-link" href="#equipe">Equipe <span class="soon">em breve</span></a>
-    </nav>
-    <p class="sidebar-note">Protótipo visual — ainda não conectado à API.</p>
-  </aside>
-  <main id="inicio">
-    <header class="topbar">
-      <div><p class="eyebrow">PAINEL DA CLÍNICA</p><h1>Visão geral</h1></div>
-      <span class="status"><span aria-hidden="true"></span> Ambiente de protótipo</span>
-    </header>
-    <section class="welcome">
-      <div><p class="eyebrow">CLÍNICA ODONTOLÓGICA XAVIER</p><h2>Organização começa com uma visão clara.</h2>
-      <p>Este espaço será a base para pacientes, agenda e equipe. Os módulos serão ativados conforme as APIs e permissões forem implementadas.</p></div>
-      <div class="welcome-icon" aria-hidden="true">✳</div>
-    </section>
-    <section class="section" aria-labelledby="modules-title">
-      <div class="section-heading"><div><p class="eyebrow">PRÓXIMOS PASSOS</p><h2 id="modules-title">Módulos planejados</h2></div></div>
-      <div class="module-grid">
-        <article class="module-card"><span class="module-icon">01</span><h3>Pacientes</h3><p>Cadastro, contatos e endereços, com proteção de dados pessoais.</p><span class="tag">API existente em evolução</span></article>
-        <article class="module-card"><span class="module-icon">02</span><h3>Agenda</h3><p>Consultas, disponibilidade profissional e acompanhamento de status.</p><span class="tag muted">Planejado</span></article>
-        <article class="module-card"><span class="module-icon">03</span><h3>Equipe</h3><p>Perfis de acesso para dentistas e atendimento administrativo.</p><span class="tag muted">Planejado</span></article>
-      </div>
-    </section>
-    <footer>Clínica Odontológica Xavier · Interface demonstrativa sem dados de pacientes.</footer>
-  </main>
-</body>
-</html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Interface da Clínica Xavier</title>
+<style>body{font:16px system-ui;max-width:700px;margin:12vh auto;padding:24px;color:#1c2e31;background:#f5f8f7}a{color:#126c61}main{background:white;padding:32px;border-radius:16px;border:1px solid #e3ebe8}</style></head>
+<body><main><h1>Clínica Odontológica Xavier</h1><p>A interface integrada agora é servida pela própria aplicação Spring Boot.</p>
+<p>Inicie o PostgreSQL e execute <code>mvn spring-boot:run</code>; depois acesse <a href="http://localhost:8080/">http://localhost:8080/</a>.</p>
+<p>Configure <code>ADMIN_EMAIL</code>, <code>ADMIN_PASSWORD</code> e <code>JWT_SECRET</code> no arquivo <code>.env</code> local antes do primeiro acesso.</p></main></body></html>
