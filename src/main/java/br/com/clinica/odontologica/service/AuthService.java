@@ -42,7 +42,8 @@ public class AuthService {
         JwtClaimsSet claims = JwtClaimsSet.builder().issuer(issuer).audience(List.of(audience))
                 .subject(usuario.email()).issuedAt(agora).expiresAt(expiraEm)
                 .claim("email", usuario.email()).claim("name", usuario.nome()).build();
-        String token = jwtEncoder.encode(JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims)).getTokenValue();
+        String token = jwtEncoder.encode(JwtEncoderParameters.from(
+                org.springframework.security.oauth2.jwt.JwsHeader.with(MacAlgorithm.HS256).build(), claims)).getTokenValue();
         return new LoginResponse(token, "Bearer", ttlSeconds, usuario.email());
     }
 }
