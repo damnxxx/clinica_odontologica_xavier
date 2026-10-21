@@ -2,9 +2,11 @@
 
 ## Estado conhecido
 - Projeto Java 21 / Spring Boot 3.5.x / Maven.
-- A versão inicial contém API CRUD de clientes e endereços.
-- A persistência inicial usa Spring Data JPA e H2.
-- Não assumir que autenticação, frontend, agenda ou prontuário já estejam implementados.
+- API REST CRUD de clientes e endereços.
+- Persistência atual do código: PostgreSQL via Spring JDBC/JdbcTemplate com SQL explícito; migrações via Flyway.
+- H2 existe somente no escopo de testes, sob o perfil `test`.
+- A interface `frontend/` ainda é um protótipo estático e não está integrada à API.
+- Autenticação JWT/Spring Security ainda não foi implementada.
 
 ## Direção aprovada
 - Evoluir em branch separada e integrar por pull request.
@@ -16,3 +18,4 @@
 - Manter o sistema compilável por etapa.
 - Documentar decisões e lacunas; atualizar esta memória quando a estrutura mudar.
 - Nunca incluir segredos nem dados reais de pacientes.
+- Não assumir que dados legados do H2 foram migrados automaticamente; planejar e testar essa importação antes de produção.

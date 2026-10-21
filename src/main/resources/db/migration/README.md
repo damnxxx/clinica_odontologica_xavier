@@ -1,5 +1,7 @@
 # Migrações de banco
 
-As migrações PostgreSQL serão adicionadas aqui como arquivos SQL versionados (por exemplo, `V1__schema_inicial.sql`). Não altere migrações que já tenham sido aplicadas em um ambiente compartilhado; crie uma nova migração corretiva.
+As migrações executáveis do PostgreSQL ficam nesta pasta com nomes versionados pelo Flyway, no formato `V1__descricao.sql`.
 
-**Estado desta etapa:** infraestrutura e convenção documentadas. A migração do esquema atual de clientes/endereços e a substituição dos repositórios JPA ainda precisam ser implementadas antes de apontar a aplicação para PostgreSQL.
+- A primeira migração executável é `V1__schema_inicial.sql`.
+- Não altere uma migração já aplicada em ambiente compartilhado; crie uma nova migração corretiva.
+- A aplicação executa as migrações automaticamente na inicialização, antes de atender requisições.

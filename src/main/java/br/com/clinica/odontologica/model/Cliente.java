@@ -1,38 +1,40 @@
 package br.com.clinica.odontologica.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
-@Table(name = "clientes")
+/**
+ * Modelo de domínio simples, sem dependência de ORM.
+ */
 public class Cliente {
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column(nullable = false, length = 120)
     private String nome;
-    @Column(nullable = false, unique = true, length = 14)
     private String cpf;
-    @Column(nullable = false, length = 160)
     private String email;
-    @Column(nullable = false, length = 20)
     private String telefone;
     private LocalDate dataNascimento;
-    @Column(length = 1000)
     private String observacoesClinicas;
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Endereco> enderecos = new ArrayList<>();
+    private final List<Endereco> enderecos = new ArrayList<>();
 
-    protected Cliente() { }
+    public Cliente() { }
+
     public Cliente(String nome, String cpf, String email, String telefone, LocalDate dataNascimento, String observacoesClinicas) {
-        this.nome = nome; this.cpf = cpf; this.email = email; this.telefone = telefone;
-        this.dataNascimento = dataNascimento; this.observacoesClinicas = observacoesClinicas;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.email = email;
+        this.telefone = telefone;
+        this.dataNascimento = dataNascimento;
+        this.observacoesClinicas = observacoesClinicas;
     }
-    public void adicionarEndereco(Endereco endereco) { enderecos.add(endereco); endereco.setCliente(this); }
-    public void removerEndereco(Endereco endereco) { enderecos.remove(endereco); endereco.setCliente(null); }
+
+    public void adicionarEndereco(Endereco endereco) {
+        enderecos.add(endereco);
+    }
+
     public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
     public String getCpf() { return cpf; }
