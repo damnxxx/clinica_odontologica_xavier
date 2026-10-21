@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -110,7 +109,7 @@ public class ClienteRepository {
             PreparedStatement statement = connection.prepareStatement("""
                     INSERT INTO enderecos (cliente_id, logradouro, numero, complemento, bairro, cidade, estado, cep)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                    """, Statement.RETURN_GENERATED_KEYS);
+                    """, new String[] {"id"});
             statement.setObject(1, clienteId);
             statement.setString(2, endereco.getLogradouro());
             statement.setString(3, endereco.getNumero());
