@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: clinica-xavier-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-clinica_xavier}
+      POSTGRES_USER: ${POSTGRES_USER:-clinica_app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no ambiente ou em .env local não versionado}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-clinica_app} -d ${POSTGRES_DB:-clinica_xavier}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  postgres_data:
