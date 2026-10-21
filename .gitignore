@@ -3,3 +3,6 @@
 *.mv.db
 *.trace.db
 .idea/workspace.xml
+.env
+.env.*
+!.env.example
