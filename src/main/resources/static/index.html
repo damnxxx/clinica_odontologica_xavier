@@ -3,60 +3,45 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Painel da Clínica Odontológica Xavier.">
-  <title>Clínica Odontológica Xavier</title>
+  <meta name="description" content="Conheça a Clínica Odontológica Xavier e os cuidados odontológicos oferecidos.">
+  <title>Clínica Odontológica Xavier | Cuidado para o seu sorriso</title>
   <link rel="stylesheet" href="/styles.css">
-  <script src="/app.js" defer></script>
 </head>
-<body>
-  <main class="shell">
-    <header class="topbar">
-      <a class="brand" href="/" aria-label="Clínica Xavier - início">
-        <span class="brand-mark" aria-hidden="true">X</span>
-        <span><strong>Clínica Xavier</strong><small>Gestão odontológica</small></span>
-      </a>
-      <button id="logout-button" class="button secondary hidden" type="button">Sair</button>
-    </header>
-    <section id="login-view" class="panel auth-panel">
-      <p class="eyebrow">ACESSO SEGURO</p>
-      <h1>Bem-vindo à Clínica Xavier</h1>
-      <p class="muted">Entre com a conta administrativa configurada para esta instalação.</p>
-      <form id="login-form" class="form-grid">
-        <label>E-mail<input id="login-email" name="email" type="email" autocomplete="username" maxlength="160" required></label>
-        <label>Senha<input id="login-password" name="senha" type="password" autocomplete="current-password" maxlength="200" required></label>
-        <button class="button" type="submit">Entrar</button>
-        <p id="login-message" class="message" role="status" aria-live="polite"></p>
-      </form>
+<body class="public-site">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="site-header">
+    <a class="site-brand" href="/" aria-label="Clínica Odontológica Xavier, início">
+      <span class="brand-mark" aria-hidden="true">X</span>
+      <span><strong>Clínica Xavier</strong><small>Odontologia com cuidado</small></span>
+    </a>
+    <nav class="site-nav" aria-label="Navegação principal">
+      <a aria-current="page" href="/">Início</a><a href="/sobre.html">A clínica</a><a href="/servicos.html">Serviços</a>
+      <a class="nav-staff" href="/equipe.html">Área da equipe</a>
+    </nav>
+  </header>
+  <main id="conteudo">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">CLÍNICA ODONTOLÓGICA XAVIER</p>
+        <h1>Seu sorriso merece cuidado em cada etapa.</h1>
+        <p class="hero-lead">A saúde bucal começa com escuta, prevenção e um plano de cuidado feito para cada pessoa.</p>
+        <div class="hero-actions"><a class="button" href="#contato">Solicitar atendimento <span aria-hidden="true">→</span></a><a class="text-link" href="/servicos.html">Conheça os serviços</a></div>
+      </div>
+      <div class="hero-art" aria-hidden="true"><div class="sun-shape"></div><div class="smile-card"><span class="tooth">✳</span><span>Bem-estar<br>começa no sorriso</span><span class="smile-line"></span></div><span class="art-dot dot-one"></span><span class="art-dot dot-two"></span></div>
     </section>
-    <section id="app-view" class="hidden">
-      <div class="page-heading"><div><p class="eyebrow">PAINEL DA CLÍNICA</p><h1>Pacientes</h1></div><span id="session-label" class="session-label"></span></div>
-      <section class="panel">
-        <div class="section-heading"><div><p class="eyebrow">CADASTRO</p><h2>Novo paciente</h2></div></div>
-        <form id="client-form" class="form-grid two-columns">
-          <label>Nome completo<input name="nome" maxlength="120" required></label>
-          <label>CPF<input name="cpf" inputmode="numeric" minlength="11" maxlength="14" required></label>
-          <label>E-mail<input name="email" type="email" maxlength="160" required></label>
-          <label>Telefone<input name="telefone" maxlength="20" required></label>
-          <label>Data de nascimento<input name="dataNascimento" type="date"></label>
-          <label>Observações clínicas (opcional)<input name="observacoesClinicas" maxlength="1000"></label>
-          <div class="full-width"><p class="eyebrow">ENDEREÇO PRINCIPAL</p></div>
-          <label>Logradouro<input name="logradouro" maxlength="120" required></label>
-          <label>Número<input name="numero" maxlength="20" required></label>
-          <label>Complemento<input name="complemento" maxlength="80"></label>
-          <label>Bairro<input name="bairro" maxlength="80" required></label>
-          <label>Cidade<input name="cidade" maxlength="80" required></label>
-          <label>Estado (UF)<input name="estado" minlength="2" maxlength="2" required></label>
-          <label>CEP<input name="cep" maxlength="9" required></label>
-          <div class="full-width form-actions"><button class="button" type="submit">Cadastrar paciente</button><p id="client-message" class="message" role="status" aria-live="polite"></p></div>
-        </form>
-      </section>
-      <section class="panel">
-        <div class="section-heading"><div><p class="eyebrow">CADASTRO ATUAL</p><h2>Pacientes cadastrados</h2></div><button id="refresh-button" class="button secondary" type="button">Atualizar lista</button></div>
-        <div id="client-list" class="client-list" aria-live="polite"></div>
-        <p id="list-message" class="message" role="status"></p>
-      </section>
+    <section class="trust-strip" aria-label="Nosso compromisso"><p><span aria-hidden="true">✦</span> Escuta com atenção</p><p><span aria-hidden="true">✦</span> Cuidado preventivo</p><p><span aria-hidden="true">✦</span> Orientação clara</p></section>
+    <section class="content-section home-services">
+      <div class="section-intro"><div><p class="eyebrow">CUIDADO COMPLETO</p><h2>Serviços para acompanhar sua saúde bucal</h2></div><a class="text-link" href="/servicos.html">Ver todos os serviços <span aria-hidden="true">→</span></a></div>
+      <div class="service-grid">
+        <article class="service-card"><span class="service-icon" aria-hidden="true">01</span><h3>Prevenção e limpeza</h3><p>Avaliação, orientações de higiene e limpeza profissional para ajudar a prevenir problemas bucais.</p></article>
+        <article class="service-card"><span class="service-icon" aria-hidden="true">02</span><h3>Restaurações</h3><p>Tratamento de cáries e recuperação da forma e função dos dentes, conforme avaliação profissional.</p></article>
+        <article class="service-card"><span class="service-icon" aria-hidden="true">03</span><h3>Tratamento de canal</h3><p>Cuidado da parte interna do dente quando há inflamação ou infecção, após diagnóstico odontológico.</p></article>
+      </div>
     </section>
-    <footer>Clínica Odontológica Xavier · Acesso protegido por token de sessão.</footer>
+    <section class="about-band"><div class="about-mark" aria-hidden="true">X</div><div><p class="eyebrow">SOBRE A CLÍNICA</p><h2>Cuidado construído junto com você.</h2><p>Nosso propósito é acolher cada pessoa e tornar o cuidado odontológico mais claro, próximo e atento às suas necessidades.</p><a class="text-link" href="/sobre.html">Conheça nossa proposta <span aria-hidden="true">→</span></a></div></section>
+    <section class="contact-section" id="contato"><div><p class="eyebrow">VAMOS CONVERSAR?</p><h2>O próximo passo começa com uma conversa.</h2><p>Para solicitar um atendimento, fale com a equipe pelos canais oficiais da clínica.</p></div><a class="button button-light" href="#contact-note">Como solicitar atendimento <span aria-hidden="true">→</span></a></section>
+    <p class="contact-note" id="contact-note">Os canais de contato ainda não foram informados para publicação neste site.</p>
   </main>
+  <footer class="site-footer"><a class="site-brand" href="/" aria-label="Clínica Xavier, início"><span class="brand-mark" aria-hidden="true">X</span><span><strong>Clínica Xavier</strong><small>Odontologia com cuidado</small></span></a><span>Clínica Odontológica Xavier</span><a href="/equipe.html">Acesso da equipe</a></footer>
 </body>
 </html>

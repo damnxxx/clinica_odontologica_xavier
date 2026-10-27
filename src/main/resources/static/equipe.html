@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Área restrita da equipe da Clínica Odontológica Xavier.">
+  <title>Área da equipe | Clínica Xavier</title><link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <main id="conteudo" class="shell">
+    <header class="topbar"><a class="brand" href="/" aria-label="Clínica Xavier, página inicial"><span class="brand-mark" aria-hidden="true">X</span><span><strong>Clínica Xavier</strong><small>Área interna da equipe</small></span></a><nav class="staff-nav" aria-label="Navegação da área interna"><a href="/">Site público</a><a href="/sobre.html">A clínica</a><a href="/servicos.html">Serviços</a><button id="logout-button" class="button secondary hidden" type="button">Sair</button></nav></header>
+    <section id="login-view" class="panel auth-panel">
+      <p class="eyebrow">ACESSO RESTRITO À EQUIPE</p><h1>Entrar no painel</h1>
+      <p class="muted">Use a conta administrativa configurada para esta instalação. Os dados dos pacientes só são carregados após autenticação.</p>
+      <form id="login-form" class="form-grid">
+        <label>E-mail<input id="login-email" name="email" type="email" autocomplete="username" maxlength="160" required></label>
+        <label>Senha<input id="login-password" name="senha" type="password" autocomplete="current-password" maxlength="200" required></label>
+        <button class="button" type="submit">Entrar</button><p id="login-message" class="message" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+    <section id="app-view" class="hidden">
+      <div class="page-heading"><div><p class="eyebrow">PAINEL DA CLÍNICA</p><h1>Gestão de pacientes</h1></div><span id="session-label" class="session-label"></span></div>
+      <section class="panel upcoming-panel" aria-labelledby="upcoming-title"><div><p class="eyebrow">PRÓXIMAS ETAPAS</p><h2 id="upcoming-title">Agenda e histórico de consultas</h2><p class="muted">Estas funções ainda não estão implementadas. Este espaço é apenas um ponto de navegação para uma etapa futura.</p></div><span class="status-pill">Em breve</span></section>
+      <section class="panel">
+        <div class="section-heading"><div><p class="eyebrow">CADASTRO</p><h2>Novo paciente</h2></div></div>
+        <form id="client-form" class="form-grid two-columns">
+          <label>Nome completo<input name="nome" maxlength="120" required></label><label>CPF<input name="cpf" inputmode="numeric" minlength="11" maxlength="14" required></label>
+          <label>E-mail<input name="email" type="email" maxlength="160" required></label><label>Telefone<input name="telefone" maxlength="20" required></label>
+          <label>Data de nascimento<input name="dataNascimento" type="date"></label><label>Observações clínicas (opcional)<input name="observacoesClinicas" maxlength="1000"></label>
+          <div class="full-width"><p class="eyebrow">ENDEREÇO PRINCIPAL</p></div>
+          <label>Logradouro<input name="logradouro" maxlength="120" required></label><label>Número<input name="numero" maxlength="20" required></label>
+          <label>Complemento<input name="complemento" maxlength="80"></label><label>Bairro<input name="bairro" maxlength="80" required></label>
+          <label>Cidade<input name="cidade" maxlength="80" required></label><label>Estado (UF)<input name="estado" minlength="2" maxlength="2" required></label><label>CEP<input name="cep" maxlength="9" required></label>
+          <div class="full-width form-actions"><button class="button" type="submit">Cadastrar paciente</button><p id="client-message" class="message" role="status" aria-live="polite"></p></div>
+        </form>
+      </section>
+      <section class="panel"><div class="section-heading"><div><p class="eyebrow">CADASTRO ATUAL</p><h2>Pacientes cadastrados</h2></div><button id="refresh-button" class="button secondary" type="button">Atualizar lista</button></div><div id="client-list" class="client-list" aria-live="polite"></div><p id="list-message" class="message" role="status"></p></section>
+    </section>
+    <footer>Área interna · Os endpoints de cadastro exigem autenticação JWT.</footer>
+  </main>
+</body>
+</html>
