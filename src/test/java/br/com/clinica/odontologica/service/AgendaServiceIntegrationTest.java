@@ -23,6 +23,14 @@ class AgendaServiceIntegrationTest {
     @BeforeEach void limpar(){jdbc.update("DELETE FROM agendamentos");jdbc.update("DELETE FROM bloqueios_agenda");jdbc.update("DELETE FROM disponibilidade_profissional");jdbc.update("DELETE FROM clientes");}
     @Test void listaEquipeEServicosPublicados(){assertEquals(5,service.profissionais().size());assertTrue(service.servicos().size()>=5);}
 
+    @Test void novoProfissionalRecebeHorarioPadraoDaClinica(){
+        UUID novo=service.cadastrarProfissional(new ProfissionalRequest("Dra. Teste","Clínica Geral","Formação demonstrativa",1,"Perfil de teste."));
+        var disponibilidade=service.disponibilidades(novo);
+        assertEquals(4,disponibilidade.size());
+        assertEquals(java.util.List.of(3,4,5,6),disponibilidade.stream().map(DisponibilidadeResponse::diaSemana).toList());
+        assertTrue(disponibilidade.stream().allMatch(d->d.inicio().equals(LocalTime.of(9,0))&&d.fim().equals(LocalTime.of(17,0))&&d.intervaloMinutos()==30));
+    }
+
     @Test void registraPedidoPublicoEImpedeConflito(){
         LocalDate dia=LocalDate.now(FUSO).plusDays(2);
         service.cadastrarDisponibilidade(profissional,new DisponibilidadeRequest(dia.getDayOfWeek().getValue(),LocalTime.of(9,0),LocalTime.of(12,0),15));

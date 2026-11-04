@@ -24,7 +24,15 @@ public class AgendaRepository {
         return jdbc.query("SELECT id,nome,descricao,duracao_minutos FROM servicos WHERE ativo=TRUE ORDER BY nome",
             (rs,n) -> new ServicoResponse(rs.getObject("id",UUID.class),rs.getString("nome"),rs.getString("descricao"),rs.getInt("duracao_minutos")));
     }
-    public UUID inserirProfissional(ProfissionalRequest r) { UUID id=UUID.randomUUID(); jdbc.update("INSERT INTO profissionais(id,nome,especialidade,formacao,experiencia_anos,biografia) VALUES (?,?,?,?,?,?)",id,r.nome().trim(),r.especialidade().trim(),r.formacao().trim(),r.experienciaAnos(),r.biografia().trim()); return id; }
+    public UUID inserirProfissional(ProfissionalRequest r) {
+        UUID id=UUID.randomUUID();
+        jdbc.update("INSERT INTO profissionais(id,nome,especialidade,formacao,experiencia_anos,biografia) VALUES (?,?,?,?,?,?)",id,r.nome().trim(),r.especialidade().trim(),r.formacao().trim(),r.experienciaAnos(),r.biografia().trim());
+        for (int diaSemana=3; diaSemana<=6; diaSemana++) {
+            jdbc.update("INSERT INTO disponibilidade_profissional(id,profissional_id,dia_semana,inicio,fim,intervalo_minutos) VALUES (?,?,?,?,?,?)",
+                    UUID.randomUUID(),id,diaSemana,Time.valueOf(LocalTime.of(9,0)),Time.valueOf(LocalTime.of(17,0)),30);
+        }
+        return id;
+    }
     public UUID inserirServico(ServicoRequest r) { UUID id=UUID.randomUUID(); jdbc.update("INSERT INTO servicos(id,nome,descricao,duracao_minutos) VALUES (?,?,?,?)",id,r.nome().trim(),r.descricao().trim(),r.duracaoMinutos()); return id; }
     public List<DisponibilidadeResponse> disponibilidades(UUID profissionalId) {
         return jdbc.query("SELECT id,profissional_id,dia_semana,inicio,fim,intervalo_minutos FROM disponibilidade_profissional WHERE profissional_id=? AND ativo=TRUE ORDER BY dia_semana,inicio",
