@@ -26,8 +26,11 @@
 - [ ] Fazer revisão de segurança e validar fluxo completo em ambiente PostgreSQL real.
 
 ## Fase 4 — Domínios de negócio
-- [ ] Dentistas e equipe de atendimento.
-- [ ] Agenda e consultas.
+- [x] Cadastro de profissionais e serviços odontológicos.
+- [x] Solicitação pública de horários e gestão da agenda pela equipe.
+- [x] Disponibilidade semanal por profissional, bloqueios e busca de horários livres.
+- [x] Confirmação pela equipe com vínculo explícito ao paciente cadastrado.
+- [ ] Notificações automáticas de confirmação e lembrete (provedor de envio pendente).
 - [ ] Prontuário com segregação de acesso e trilha de auditoria.
 - [ ] Faturamento e relatórios após especificação.
 

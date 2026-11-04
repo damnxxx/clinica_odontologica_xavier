@@ -22,9 +22,22 @@ const clientAddresses = document.querySelector("#client-addresses");
 const editDialogTitle = document.querySelector("#edit-dialog-title");
 const addressDialogTitle = document.querySelector("#address-dialog-title");
 const sessionLabel = document.querySelector("#session-label");
+const agendaForm = document.querySelector("#agenda-form");
+const appointmentList = document.querySelector("#appointment-list");
+const appointmentMessage = document.querySelector("#appointment-message");
+const agendaFormMessage = document.querySelector("#agenda-form-message");
+const professionalForm = document.querySelector("#professional-form");
+const serviceForm = document.querySelector("#service-form");
+const bookSlotForm = document.querySelector("#book-slot-form");
+const slotList = document.querySelector("#available-slot-list");
+const availabilityForm = document.querySelector("#availability-form");
+const blockForm = document.querySelector("#block-form");
+const availabilityList = document.querySelector("#availability-list");
+const blockList = document.querySelector("#block-list");
 let accessToken = sessionStorage.getItem("accessToken") || "";
 let signedInEmail = sessionStorage.getItem("signedInEmail") || "";
 let editingClient = null;
+let selectedAvailableSlot = null;
 
 const addressFields = [
   ["logradouro", "Logradouro", 120, true],
@@ -50,6 +63,7 @@ function showSignedOut() {
   appView.classList.add("hidden");
   logoutButton.classList.add("hidden");
   clientList.replaceChildren();
+  appointmentList?.replaceChildren();
 }
 
 function showSignedIn() {
@@ -58,6 +72,89 @@ function showSignedIn() {
   logoutButton.classList.remove("hidden");
   sessionLabel.textContent = signedInEmail;
   loadClients();
+  loadAgenda();
+}
+
+async function loadAgendaOptions() {
+  if (!agendaForm) return;
+  const [professionals, services] = await Promise.all([
+    fetch("/api/publico/profissionais").then((r) => r.json()),
+    fetch("/api/publico/servicos").then((r) => r.json())
+  ]);
+  const fill = (select, rows, label) => select.replaceChildren(new Option("Selecione", ""), ...rows.map((row) => new Option(label(row), row.id)));
+  document.querySelectorAll('select[name="profissionalId"]').forEach((select) => fill(select, professionals, (p) => `${p.nome} · ${p.especialidade}`));
+  document.querySelectorAll('select[name="servicoId"]').forEach((select) => fill(select, services, (s) => `${s.nome} · ${s.duracaoMinutos} min`));
+  const today = new Date();
+  const localDate = (date) => new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0,10);
+  agendaForm.elements.de.value = localDate(today);
+  const lastDay = new Date(today); lastDay.setDate(lastDay.getDate()+14);
+  agendaForm.elements.ate.value = localDate(lastDay);
+  const now = new Date(Date.now()-today.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  blockForm.elements.inicio.min = now; blockForm.elements.fim.min = now;
+}
+
+function renderAvailableSlot(slot) {
+  const item=document.createElement("article"); item.className="slot-card";
+  addText(item,"strong",new Date(slot.inicio).toLocaleString("pt-BR"));
+  addText(item,"p",`${slot.profissionalNome} · ${slot.servicoNome}`);
+  const button=document.createElement("button"); button.type="button"; button.className="button secondary"; button.textContent="Selecionar paciente";
+  button.addEventListener("click",()=>selectSlotForPatient(slot)); item.append(button); return item;
+}
+
+async function selectSlotForPatient(slot) {
+  selectedAvailableSlot=slot;
+  try {
+    const patients=await apiRequest("/api/clientes");
+    const select=bookSlotForm.elements.pacienteId;
+    select.replaceChildren(new Option("Selecione o paciente cadastrado",""),...patients.map(p=>new Option(`${p.nome} · CPF ${p.cpf}`,p.id)));
+    document.querySelector("#selected-slot-label").textContent=`${slot.profissionalNome} · ${slot.servicoNome} · ${new Date(slot.inicio).toLocaleString("pt-BR")}`;
+    showMessage(document.querySelector("#book-slot-message"),"");
+    bookSlotForm.classList.remove("hidden");
+    bookSlotForm.scrollIntoView({behavior:"smooth",block:"center"});
+  } catch(error) { showMessage(agendaFormMessage,error.message,true); }
+}
+
+async function loadSchedule(professionalId) {
+  if(!professionalId||!availabilityList||!accessToken) return;
+  try {
+    const now=new Date(); const to=new Date(now); to.setDate(to.getDate()+60);
+    const fromValue=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,16)+":00";
+    const toValue=new Date(to.getTime()-to.getTimezoneOffset()*60000).toISOString().slice(0,16)+":00";
+    const [availability,blocks]=await Promise.all([
+      apiRequest(`/api/profissionais/${professionalId}/disponibilidades`),
+      apiRequest(`/api/profissionais/${professionalId}/bloqueios?de=${encodeURIComponent(fromValue)}&ate=${encodeURIComponent(toValue)}`)
+    ]);
+    availabilityList.replaceChildren();
+    const days=["","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado","Domingo"];
+    availability.forEach(a=>{const row=document.createElement("div");row.className="schedule-item";addText(row,"span",`${days[a.diaSemana]} · ${a.inicio.slice(0,5)}–${a.fim.slice(0,5)} · intervalos de ${a.intervaloMinutos} min`);const remove=document.createElement("button");remove.className="button danger";remove.type="button";remove.textContent="Remover";remove.addEventListener("click",async()=>{await apiRequest(`/api/profissionais/${professionalId}/disponibilidades/${a.id}`,{method:"DELETE"});await loadSchedule(professionalId)});row.append(remove);availabilityList.append(row)});
+    if(!availability.length) addText(availabilityList,"p","Nenhuma disponibilidade semanal cadastrada.");
+    blockList.replaceChildren();
+    blocks.forEach(b=>{const row=document.createElement("div");row.className="schedule-item";addText(row,"span",`${new Date(b.inicio).toLocaleString("pt-BR")} – ${new Date(b.fim).toLocaleString("pt-BR")}${b.motivo?` · ${b.motivo}`:""}`);const remove=document.createElement("button");remove.className="button danger";remove.type="button";remove.textContent="Remover";remove.addEventListener("click",async()=>{await apiRequest(`/api/profissionais/${professionalId}/bloqueios/${b.id}`,{method:"DELETE"});await loadSchedule(professionalId)});row.append(remove);blockList.append(row)});
+    if(!blocks.length) addText(blockList,"p","Nenhum bloqueio nos próximos 60 dias.");
+  } catch(error) { addText(availabilityList,"p",error.message); }
+}
+
+function renderAppointment(appointment) {
+  const card = document.createElement("article"); card.className = "appointment-card";
+  addText(card, "h3", `${new Date(appointment.inicio).toLocaleString("pt-BR")} · ${appointment.pacienteNome}`);
+  addText(card, "p", `${appointment.servicoNome} com ${appointment.profissionalNome}`);
+  addText(card, "p", `${appointment.pacienteTelefone} · ${appointment.pacienteEmail}`);
+  if (appointment.observacao) addText(card, "p", appointment.observacao);
+  const actions = document.createElement("div"); actions.className = "action-row";
+  const status = document.createElement("select");
+  [["SOLICITADO", "Solicitado"], ["CONFIRMADO", "Confirmado"], ["CANCELADO", "Cancelado"], ["CONCLUIDO", "Concluído"]].forEach(([value, label]) => status.add(new Option(label, value)));
+  status.value = appointment.status; status.setAttribute("aria-label", `Status do agendamento de ${appointment.pacienteNome}`);
+  status.addEventListener("change", async () => { try { await apiRequest(`/api/agendamentos/${appointment.id}`, { method: "PATCH", body: JSON.stringify({ status: status.value, pacienteId: appointment.pacienteId }) }); showMessage(appointmentMessage, "Status do agendamento atualizado."); await loadAgenda(); } catch (error) { status.value = appointment.status; showMessage(appointmentMessage, error.message, true); } });
+  actions.append(status); card.append(actions); return card;
+}
+
+async function loadAgenda() {
+  if (!appointmentList || !accessToken) return;
+  try {
+    const appointments = await apiRequest("/api/agendamentos"); appointmentList.replaceChildren();
+    appointments.forEach((appointment) => appointmentList.append(renderAppointment(appointment)));
+    showMessage(appointmentMessage, appointments.length ? `${appointments.length} agendamento(s).` : "Ainda não há agendamentos.");
+  } catch (error) { showMessage(appointmentMessage, error.message, true); }
 }
 
 async function apiRequest(path, options = {}) {
@@ -406,9 +503,50 @@ addAddressButton.addEventListener("click", () => {
   showMessage(clientMessage, "");
 });
 refreshButton.addEventListener("click", loadClients);
+document.querySelector("#agenda-refresh")?.addEventListener("click", loadAgenda);
+agendaForm?.addEventListener("submit", async (event) => {
+  event.preventDefault(); showMessage(agendaFormMessage, "Buscando horários livres..."); slotList.replaceChildren(); bookSlotForm.classList.add("hidden"); selectedAvailableSlot=null;
+  try {
+    const params=new URLSearchParams({profissionalId:agendaForm.elements.profissionalId.value,servicoId:agendaForm.elements.servicoId.value,de:agendaForm.elements.de.value,ate:agendaForm.elements.ate.value});
+    const response=await fetch(`/api/publico/horarios?${params}`); const slots=await response.json();
+    if(!response.ok) throw new Error(slots.detail||"Não foi possível buscar horários.");
+    slots.forEach(slot=>slotList.append(renderAvailableSlot(slot)));
+    showMessage(agendaFormMessage,slots.length?`${slots.length} horário(s) disponível(is).`:"Nenhum horário livre nesse período. Configure a disponibilidade do profissional ou escolha outras datas.");
+  } catch(error) { showMessage(agendaFormMessage,error.message,true); }
+});
+bookSlotForm?.addEventListener("submit",async(event)=>{
+  event.preventDefault(); if(!selectedAvailableSlot)return;
+  showMessage(document.querySelector("#book-slot-message"),"Confirmando consulta...");
+  const payload={pacienteId:bookSlotForm.elements.pacienteId.value,profissionalId:selectedAvailableSlot.profissionalId,servicoId:selectedAvailableSlot.servicoId,inicio:selectedAvailableSlot.inicio,observacao:bookSlotForm.elements.observacao.value.trim()||null};
+  try { await apiRequest("/api/agendamentos",{method:"POST",body:JSON.stringify(payload)}); showMessage(document.querySelector("#book-slot-message"),"Consulta confirmada para o paciente cadastrado."); bookSlotForm.classList.add("hidden"); await loadAgenda(); agendaForm.requestSubmit(); }
+  catch(error) { showMessage(document.querySelector("#book-slot-message"),error.message,true); }
+});
+document.querySelector("#cancel-slot-selection")?.addEventListener("click",()=>{selectedAvailableSlot=null;bookSlotForm.classList.add("hidden")});
+availabilityForm?.addEventListener("submit",async(event)=>{
+  event.preventDefault();const professionalId=availabilityForm.elements.profissionalId.value;const data=Object.fromEntries(new FormData(availabilityForm));data.diaSemana=Number(data.diaSemana);data.intervaloMinutos=Number(data.intervaloMinutos);
+  try { await apiRequest(`/api/profissionais/${professionalId}/disponibilidades`,{method:"POST",body:JSON.stringify(data)});showMessage(document.querySelector("#availability-message"),"Disponibilidade semanal cadastrada.");await loadSchedule(professionalId); }
+  catch(error) { showMessage(document.querySelector("#availability-message"),error.message,true); }
+});
+blockForm?.addEventListener("submit",async(event)=>{
+  event.preventDefault();const professionalId=blockForm.elements.profissionalId.value;const data=Object.fromEntries(new FormData(blockForm));
+  try { await apiRequest(`/api/profissionais/${professionalId}/bloqueios`,{method:"POST",body:JSON.stringify(data)});showMessage(document.querySelector("#block-message"),"Período bloqueado.");blockForm.reset();blockForm.elements.profissionalId.value=professionalId;await loadSchedule(professionalId); }
+  catch(error) { showMessage(document.querySelector("#block-message"),error.message,true); }
+});
+document.querySelectorAll('#availability-form select[name="profissionalId"],#block-form select[name="profissionalId"]').forEach(select=>select.addEventListener("change",()=>loadSchedule(select.value)));
+professionalForm?.addEventListener("submit", async (event) => {
+  event.preventDefault(); const data = Object.fromEntries(new FormData(professionalForm)); data.experienciaAnos = Number(data.experienciaAnos);
+  try { await apiRequest("/api/profissionais", { method: "POST", body: JSON.stringify(data) }); professionalForm.reset(); showMessage(document.querySelector("#professional-message"), "Profissional cadastrado."); await loadAgendaOptions(); }
+  catch (error) { showMessage(document.querySelector("#professional-message"), error.message, true); }
+});
+serviceForm?.addEventListener("submit", async (event) => {
+  event.preventDefault(); const data = Object.fromEntries(new FormData(serviceForm)); data.duracaoMinutos = Number(data.duracaoMinutos);
+  try { await apiRequest("/api/servicos", { method: "POST", body: JSON.stringify(data) }); serviceForm.reset(); showMessage(document.querySelector("#service-message"), "Serviço cadastrado."); await loadAgendaOptions(); }
+  catch (error) { showMessage(document.querySelector("#service-message"), error.message, true); }
+});
 logoutButton.addEventListener("click", showSignedOut);
 closeClientDialogButton.addEventListener("click", () => clientDialog.close());
 closeAddressDialogButton.addEventListener("click", () => addressDialog.close());
 
 appendAddressEditor(clientAddresses);
+loadAgendaOptions().catch(() => showMessage(agendaFormMessage, "Não foi possível carregar profissionais e serviços.", true));
 if (accessToken) showSignedIn(); else showSignedOut();

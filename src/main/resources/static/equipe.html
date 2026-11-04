@@ -32,9 +32,33 @@
 
     <section id="app-view" class="hidden">
       <div class="page-heading">
-        <div><p class="eyebrow">PAINEL DA CLÍNICA</p><h1>Clientes</h1></div>
+        <div><p class="eyebrow">PAINEL DA CLÍNICA</p><h1>Agenda e pacientes</h1></div>
         <span id="session-label" class="session-label"></span>
       </div>
+
+      <section class="panel">
+        <div class="section-heading"><div><p class="eyebrow">AGENDA</p><h2>Buscar horário livre</h2></div><button id="agenda-refresh" class="button secondary" type="button">Atualizar agenda</button></div>
+        <form id="agenda-form" class="form-grid two-columns">
+          <label>Profissional<select name="profissionalId" required></select></label><label>Serviço<select name="servicoId" required></select></label>
+          <label>A partir de<input name="de" type="date" required></label><label>Até<input name="ate" type="date" required></label>
+          <div class="full-width form-actions"><button class="button" type="submit">Pesquisar horários</button><p id="agenda-form-message" class="message" role="status"></p></div>
+        </form>
+        <div id="available-slot-list" class="slot-list" aria-live="polite"></div>
+        <form id="book-slot-form" class="form-grid two-columns hidden"><h3 class="full-width">Confirmar com paciente cadastrado</h3><p id="selected-slot-label" class="muted full-width"></p><label>Paciente<select name="pacienteId" required></select></label><label>Observação (opcional)<input name="observacao" maxlength="500"></label><div class="full-width form-actions"><button class="button" type="submit">Confirmar consulta</button><button id="cancel-slot-selection" class="button secondary" type="button">Cancelar</button><p id="book-slot-message" class="message" role="status"></p></div></form>
+      </section>
+      <section class="panel"><div class="section-heading"><div><p class="eyebrow">CONSULTAS</p><h2>Agenda da clínica</h2></div></div><div id="appointment-list" class="appointment-list" aria-live="polite"></div><p id="appointment-message" class="message" role="status"></p></section>
+
+      <section class="panel"><div class="section-heading"><div><p class="eyebrow">CADASTROS DA CLÍNICA</p><h2>Profissionais e serviços</h2></div></div><div class="catalog-grid">
+        <form id="professional-form" class="form-grid"><h3>Novo profissional</h3><label>Nome<input name="nome" maxlength="120" required></label><label>Especialidade<input name="especialidade" maxlength="120" required></label><label>Formação<input name="formacao" maxlength="240" required></label><label>Anos de experiência<input name="experienciaAnos" type="number" min="0" max="60" required></label><label>Apresentação<textarea name="biografia" maxlength="1000" rows="3" required></textarea></label><button class="button" type="submit">Cadastrar profissional</button><p id="professional-message" class="message" role="status"></p></form>
+        <form id="service-form" class="form-grid"><h3>Novo serviço</h3><label>Nome<input name="nome" maxlength="120" required></label><label>Descrição<textarea name="descricao" maxlength="500" rows="3" required></textarea></label><label>Duração (minutos)<input name="duracaoMinutos" type="number" min="15" max="240" step="15" required></label><button class="button" type="submit">Cadastrar serviço</button><p id="service-message" class="message" role="status"></p></form>
+      </div></section>
+
+      <section class="panel"><div class="section-heading"><div><p class="eyebrow">DISPONIBILIDADE</p><h2>Horários semanais e bloqueios</h2><p class="muted">Configure a disponibilidade de cada profissional antes de abrir horários para agendamento.</p></div></div>
+        <div class="catalog-grid">
+          <form id="availability-form" class="form-grid"><h3>Adicionar horário semanal</h3><label>Profissional<select name="profissionalId" required></select></label><label>Dia da semana<select name="diaSemana" required><option value="1">Segunda-feira</option><option value="2">Terça-feira</option><option value="3">Quarta-feira</option><option value="4">Quinta-feira</option><option value="5">Sexta-feira</option><option value="6">Sábado</option><option value="7">Domingo</option></select></label><label>Início<input name="inicio" type="time" required></label><label>Fim<input name="fim" type="time" required></label><label>Intervalo entre horários (min)<input name="intervaloMinutos" type="number" min="5" max="240" step="5" value="30" required></label><button class="button" type="submit">Salvar disponibilidade</button><p id="availability-message" class="message" role="status"></p></form>
+          <form id="block-form" class="form-grid"><h3>Bloquear período</h3><label>Profissional<select name="profissionalId" required></select></label><label>Início<input name="inicio" type="datetime-local" required></label><label>Fim<input name="fim" type="datetime-local" required></label><label>Motivo (opcional)<input name="motivo" maxlength="250"></label><button class="button" type="submit">Bloquear horário</button><p id="block-message" class="message" role="status"></p></form>
+        </div><div class="catalog-grid schedule-lists"><div><h3>Disponibilidade cadastrada</h3><div id="availability-list" class="schedule-item-list"></div></div><div><h3>Próximos bloqueios</h3><div id="block-list" class="schedule-item-list"></div></div></div>
+      </section>
 
       <section class="panel">
         <div class="section-heading"><div><p class="eyebrow">CADASTRO</p><h2>Novo cliente</h2></div></div>

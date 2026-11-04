@@ -9,6 +9,8 @@
 - Frontend servido pelo Spring Boot em `src/main/resources/static/`; suporta login, listagem e cadastro básico.
 - O bootstrap do primeiro usuário administrativo é opcional via `ADMIN_EMAIL` e `ADMIN_PASSWORD`; a senha é armazenada com BCrypt.
 - Ainda não há permissões granulares, gestão de usuários, refresh token ou migração automática de dados legados H2.
+- A migração V3 adiciona profissionais, serviços e agendamentos; solicitações públicas ficam pendentes até confirmação da equipe. Os profissionais iniciais são fictícios.
+- A migração V4 adiciona horários semanais, bloqueios e fim persistido dos agendamentos, com exclusão PostgreSQL para impedir sobreposição concorrente. Horários não são pré-configurados; a equipe precisa cadastrar a disponibilidade real.
 
 ## Direção aprovada
 - Evoluir em branch separada e integrar por pull request.

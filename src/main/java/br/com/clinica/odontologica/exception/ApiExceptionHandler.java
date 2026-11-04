@@ -28,6 +28,6 @@ public class ApiExceptionHandler {
     }
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail integridade(DataIntegrityViolationException e) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, "Não foi possível salvar: CPF duplicado ou dados incompatíveis com o banco.");
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, "Já existe um cadastro equivalente ou os dados são incompatíveis.");
     }
 }

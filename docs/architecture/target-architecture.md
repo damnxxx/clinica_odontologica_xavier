@@ -13,13 +13,13 @@
 2. Persistência PostgreSQL com SQL explícito e migrações Flyway.
 3. Login por e-mail/senha, hash BCrypt e access token JWT.
 4. Proteção de endpoints `/api/**` com bearer token, exceto o login.
-5. Frontend básico com login, listagem e cadastro de pacientes.
+5. Frontend com login, gestão de pacientes, profissionais, serviços e agenda, além de solicitação pública de consultas.
 
 ## Limites de domínio planejados
 1. Cadastro de pacientes/clientes e endereços (implementado).
 2. Identidade, usuários e perfis (login implementado; gestão de usuários e perfis pendentes).
-3. Dentistas e equipe de atendimento.
-4. Agenda e consultas.
+3. Profissionais e serviços odontológicos (cadastro inicial e gestão implementados).
+4. Agenda e consultas (solicitação pública e confirmação pela equipe implementadas; notificações automáticas pendentes).
 5. Prontuário e eventos clínicos, com autorização e trilha de auditoria.
 6. Faturamento e relatórios, após especificação.
 
