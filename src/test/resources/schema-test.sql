@@ -14,3 +14,33 @@ CREATE TABLE usuarios (
     senha_hash VARCHAR(100) NOT NULL, ativo BOOLEAN NOT NULL DEFAULT TRUE,
     criado_em TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE profissionais (
+    id UUID PRIMARY KEY, nome VARCHAR(120) NOT NULL, especialidade VARCHAR(120) NOT NULL,
+    formacao VARCHAR(240) NOT NULL, experiencia_anos INTEGER NOT NULL, biografia VARCHAR(1000) NOT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE
+);
+CREATE TABLE servicos (
+    id UUID PRIMARY KEY, nome VARCHAR(120) NOT NULL UNIQUE, descricao VARCHAR(500) NOT NULL,
+    duracao_minutos INTEGER NOT NULL, ativo BOOLEAN NOT NULL DEFAULT TRUE
+);
+CREATE TABLE agendamentos (
+    id UUID PRIMARY KEY, paciente_id UUID REFERENCES clientes(id) ON DELETE SET NULL,
+    profissional_id UUID NOT NULL REFERENCES profissionais(id), servico_id UUID NOT NULL REFERENCES servicos(id),
+    paciente_nome VARCHAR(120) NOT NULL, paciente_email VARCHAR(160) NOT NULL, paciente_telefone VARCHAR(20) NOT NULL,
+    inicio TIMESTAMP NOT NULL, status VARCHAR(20) NOT NULL, observacao VARCHAR(500),
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+INSERT INTO profissionais (id,nome,especialidade,formacao,experiencia_anos,biografia) VALUES
+('10000000-0000-0000-0000-000000000001','Dr. Lucas Almeida','Clínica Geral e Dentística','Graduado em Odontologia pela Universidade São Paulo do Vale.',8,'Atua na prevenção e no tratamento de problemas bucais.'),
+('10000000-0000-0000-0000-000000000002','Dra. Adriana Moreira','Ortodontia','Graduada em Odontologia pela Faculdade Metropolitana de Saúde.',10,'Trabalha com alinhamento dentário e correção da mordida.'),
+('10000000-0000-0000-0000-000000000003','Dra. Lúcia Ferreira','Odontopediatria','Graduada em Odontologia pela Universidade do Interior Paulista.',12,'Especializada no atendimento infantil.'),
+('10000000-0000-0000-0000-000000000004','Dra. Linda Carvalho','Endodontia','Graduada em Odontologia pela Faculdade de Ciências da Saúde Paulista.',7,'Atua em tratamentos de canal.'),
+('10000000-0000-0000-0000-000000000005','Dr. Carlos Ribeiro','Implantodontia','Graduado em Odontologia pela Universidade Paulista de Medicina.',9,'Especialista em reabilitação oral e implantes.');
+INSERT INTO servicos (id,nome,descricao,duracao_minutos) VALUES
+('20000000-0000-0000-0000-000000000001','Avaliação odontológica','Consulta inicial.',45),
+('20000000-0000-0000-0000-000000000002','Prevenção e limpeza','Avaliação e limpeza.',45),
+('20000000-0000-0000-0000-000000000003','Restauração','Restauração dental.',60),
+('20000000-0000-0000-0000-000000000004','Tratamento de canal','Tratamento endodôntico.',90),
+('20000000-0000-0000-0000-000000000005','Ortodontia','Avaliação ortodôntica.',45),
+('20000000-0000-0000-0000-000000000006','Odontopediatria','Atendimento infantil.',45),
+('20000000-0000-0000-0000-000000000007','Implante dentário','Avaliação para implantes.',60);

@@ -32,9 +32,24 @@
 
     <section id="app-view" class="hidden">
       <div class="page-heading">
-        <div><p class="eyebrow">PAINEL DA CLÍNICA</p><h1>Clientes</h1></div>
+        <div><p class="eyebrow">PAINEL DA CLÍNICA</p><h1>Agenda e pacientes</h1></div>
         <span id="session-label" class="session-label"></span>
       </div>
+
+      <section class="panel">
+        <div class="section-heading"><div><p class="eyebrow">AGENDA</p><h2>Novo agendamento</h2></div><button id="agenda-refresh" class="button secondary" type="button">Atualizar agenda</button></div>
+        <form id="agenda-form" class="form-grid two-columns">
+          <label>Nome do paciente<input name="pacienteNome" maxlength="120" required></label><label>E-mail<input name="pacienteEmail" type="email" maxlength="160" required></label><label>Telefone<input name="pacienteTelefone" maxlength="20" required></label>
+          <label>Profissional<select name="profissionalId" required></select></label><label>Serviço<select name="servicoId" required></select></label><label>Data e horário<input name="inicio" type="datetime-local" required></label>
+          <label class="full-width">Observação<input name="observacao" maxlength="500"></label><div class="full-width form-actions"><button class="button" type="submit">Agendar e confirmar</button><p id="agenda-form-message" class="message" role="status"></p></div>
+        </form>
+      </section>
+      <section class="panel"><div class="section-heading"><div><p class="eyebrow">CONSULTAS</p><h2>Agenda da clínica</h2></div></div><div id="appointment-list" class="appointment-list" aria-live="polite"></div><p id="appointment-message" class="message" role="status"></p></section>
+
+      <section class="panel"><div class="section-heading"><div><p class="eyebrow">CADASTROS DA CLÍNICA</p><h2>Profissionais e serviços</h2></div></div><div class="catalog-grid">
+        <form id="professional-form" class="form-grid"><h3>Novo profissional</h3><label>Nome<input name="nome" maxlength="120" required></label><label>Especialidade<input name="especialidade" maxlength="120" required></label><label>Formação<input name="formacao" maxlength="240" required></label><label>Anos de experiência<input name="experienciaAnos" type="number" min="0" max="60" required></label><label>Apresentação<textarea name="biografia" maxlength="1000" rows="3" required></textarea></label><button class="button" type="submit">Cadastrar profissional</button><p id="professional-message" class="message" role="status"></p></form>
+        <form id="service-form" class="form-grid"><h3>Novo serviço</h3><label>Nome<input name="nome" maxlength="120" required></label><label>Descrição<textarea name="descricao" maxlength="500" rows="3" required></textarea></label><label>Duração (minutos)<input name="duracaoMinutos" type="number" min="15" max="240" step="15" required></label><button class="button" type="submit">Cadastrar serviço</button><p id="service-message" class="message" role="status"></p></form>
+      </div></section>
 
       <section class="panel">
         <div class="section-heading"><div><p class="eyebrow">CADASTRO</p><h2>Novo cliente</h2></div></div>

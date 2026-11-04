@@ -1,6 +1,6 @@
 # Clínica Odontológica Xavier
 
-Sistema em evolução para gestão de uma clínica odontológica. A API REST oferece cadastro de clientes e endereços, persistência PostgreSQL via SQL explícito e autenticação JWT. O frontend integrado permite login, listagem e cadastro básico de pacientes.
+Sistema em evolução para gestão de uma clínica odontológica. A API REST oferece cadastro de pacientes e endereços, profissionais, serviços odontológicos e agendamentos, com persistência PostgreSQL via SQL explícito e autenticação JWT. O site público apresenta a clínica, os serviços e a equipe e permite solicitar uma consulta; a equipe gerencia a agenda na área administrativa.
 
 ## Stack atual
 
@@ -26,7 +26,7 @@ O arquivo `.env` é carregado pela aplicação localmente e também fornece vari
 ## Autenticação e segurança
 
 - `POST /api/auth/login` é o endpoint público para obter um access token.
-- Todos os endpoints `/api/**`, exceto o login, exigem `Authorization: Bearer <token>`.
+- Todos os endpoints administrativos `/api/**` exigem `Authorization: Bearer <token>`. O login e as rotas de catálogo e solicitação em `/api/publico/**` são públicas.
 - Os tokens expiram após 30 minutos e validam assinatura HS256, emissor e audiência.
 - Senhas são armazenadas com BCrypt; o login retorna uma mensagem genérica para credenciais inválidas.
 - A sessão do frontend mantém o token em `sessionStorage`, que é limpo ao sair ou quando a API retorna 401. Isso é uma solução inicial; a revisão contra XSS e a decisão de armazenamento devem preceder uso em produção.
@@ -45,6 +45,16 @@ O arquivo `.env` é carregado pela aplicação localmente e também fornece vari
 | DELETE | `/api/clientes/{id}` | Exclui paciente (JWT obrigatório) |
 
 A API também mantém operações de consulta, atualização e exclusão de endereços.
+| Método | Rota | Ação |
+| --- | --- | --- |
+| GET | `/api/publico/profissionais` | Lista profissionais ativos (público) |
+| GET | `/api/publico/servicos` | Lista serviços ativos (público) |
+| POST | `/api/publico/agendamentos` | Solicita horário sujeito à confirmação (público) |
+| GET | `/api/agendamentos` | Consulta a agenda (JWT obrigatório) |
+| POST | `/api/agendamentos` | Cria consulta confirmada (JWT obrigatório) |
+| PATCH | `/api/agendamentos/{id}` | Atualiza status de consulta (JWT obrigatório) |
+| POST | `/api/profissionais` | Cadastra profissional (JWT obrigatório) |
+| POST | `/api/servicos` | Cadastra serviço (JWT obrigatório) |
 
 ## Testes
 
@@ -60,7 +70,9 @@ Execute `mvn verify`. Os testes de integração usam H2 em memória com perfil `
 
 ## Interface
 
-A interface ativa fica em `src/main/resources/static/` e é servida pela API em `http://localhost:8080/`. A pasta `frontend/` contém uma página de instruções para iniciar a versão integrada.
+A interface ativa fica em `src/main/resources/static/` e é servida pela API em `http://localhost:8080/`. A página pública de solicitação de horários fica em `/agendar.html`; a equipe acessa agenda e cadastros em `/equipe.html`.
+
+Os profissionais iniciais e as descrições recebidas são fictícios e foram incluídos pela migração `V3__agenda_profissionais_servicos.sql`. Solicitações públicas ficam com status `SOLICITADO`; a confirmação é feita manualmente pela equipe. Envio automático de e-mail/SMS ainda depende da configuração de um provedor de notificações.
 
 ## Pendências antes de produção
 

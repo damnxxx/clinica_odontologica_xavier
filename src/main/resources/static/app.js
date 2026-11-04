@@ -22,6 +22,12 @@ const clientAddresses = document.querySelector("#client-addresses");
 const editDialogTitle = document.querySelector("#edit-dialog-title");
 const addressDialogTitle = document.querySelector("#address-dialog-title");
 const sessionLabel = document.querySelector("#session-label");
+const agendaForm = document.querySelector("#agenda-form");
+const appointmentList = document.querySelector("#appointment-list");
+const appointmentMessage = document.querySelector("#appointment-message");
+const agendaFormMessage = document.querySelector("#agenda-form-message");
+const professionalForm = document.querySelector("#professional-form");
+const serviceForm = document.querySelector("#service-form");
 let accessToken = sessionStorage.getItem("accessToken") || "";
 let signedInEmail = sessionStorage.getItem("signedInEmail") || "";
 let editingClient = null;
@@ -50,6 +56,7 @@ function showSignedOut() {
   appView.classList.add("hidden");
   logoutButton.classList.add("hidden");
   clientList.replaceChildren();
+  appointmentList?.replaceChildren();
 }
 
 function showSignedIn() {
@@ -58,6 +65,42 @@ function showSignedIn() {
   logoutButton.classList.remove("hidden");
   sessionLabel.textContent = signedInEmail;
   loadClients();
+  loadAgenda();
+}
+
+async function loadAgendaOptions() {
+  if (!agendaForm) return;
+  const [professionals, services] = await Promise.all([
+    fetch("/api/publico/profissionais").then((r) => r.json()),
+    fetch("/api/publico/servicos").then((r) => r.json())
+  ]);
+  const fill = (select, rows, label) => select.replaceChildren(new Option("Selecione", ""), ...rows.map((row) => new Option(label(row), row.id)));
+  fill(agendaForm.elements.profissionalId, professionals, (p) => `${p.nome} · ${p.especialidade}`);
+  fill(agendaForm.elements.servicoId, services, (s) => `${s.nome} · ${s.duracaoMinutos} min`);
+  agendaForm.elements.inicio.min = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+}
+
+function renderAppointment(appointment) {
+  const card = document.createElement("article"); card.className = "appointment-card";
+  addText(card, "h3", `${new Date(appointment.inicio).toLocaleString("pt-BR")} · ${appointment.pacienteNome}`);
+  addText(card, "p", `${appointment.servicoNome} com ${appointment.profissionalNome}`);
+  addText(card, "p", `${appointment.pacienteTelefone} · ${appointment.pacienteEmail}`);
+  if (appointment.observacao) addText(card, "p", appointment.observacao);
+  const actions = document.createElement("div"); actions.className = "action-row";
+  const status = document.createElement("select");
+  [["SOLICITADO", "Solicitado"], ["CONFIRMADO", "Confirmado"], ["CANCELADO", "Cancelado"], ["CONCLUIDO", "Concluído"]].forEach(([value, label]) => status.add(new Option(label, value)));
+  status.value = appointment.status; status.setAttribute("aria-label", `Status do agendamento de ${appointment.pacienteNome}`);
+  status.addEventListener("change", async () => { try { await apiRequest(`/api/agendamentos/${appointment.id}`, { method: "PATCH", body: JSON.stringify({ status: status.value, pacienteId: appointment.pacienteId }) }); showMessage(appointmentMessage, "Status do agendamento atualizado."); await loadAgenda(); } catch (error) { status.value = appointment.status; showMessage(appointmentMessage, error.message, true); } });
+  actions.append(status); card.append(actions); return card;
+}
+
+async function loadAgenda() {
+  if (!appointmentList || !accessToken) return;
+  try {
+    const appointments = await apiRequest("/api/agendamentos"); appointmentList.replaceChildren();
+    appointments.forEach((appointment) => appointmentList.append(renderAppointment(appointment)));
+    showMessage(appointmentMessage, appointments.length ? `${appointments.length} agendamento(s).` : "Ainda não há agendamentos.");
+  } catch (error) { showMessage(appointmentMessage, error.message, true); }
 }
 
 async function apiRequest(path, options = {}) {
@@ -406,9 +449,27 @@ addAddressButton.addEventListener("click", () => {
   showMessage(clientMessage, "");
 });
 refreshButton.addEventListener("click", loadClients);
+document.querySelector("#agenda-refresh")?.addEventListener("click", loadAgenda);
+agendaForm?.addEventListener("submit", async (event) => {
+  event.preventDefault(); showMessage(agendaFormMessage, "Salvando agendamento...");
+  const payload = Object.fromEntries(new FormData(agendaForm));
+  try { await apiRequest("/api/agendamentos", { method: "POST", body: JSON.stringify(payload) }); agendaForm.reset(); await loadAgendaOptions(); await loadAgenda(); showMessage(agendaFormMessage, "Consulta agendada e confirmada."); }
+  catch (error) { showMessage(agendaFormMessage, error.message, true); }
+});
+professionalForm?.addEventListener("submit", async (event) => {
+  event.preventDefault(); const data = Object.fromEntries(new FormData(professionalForm)); data.experienciaAnos = Number(data.experienciaAnos);
+  try { await apiRequest("/api/profissionais", { method: "POST", body: JSON.stringify(data) }); professionalForm.reset(); showMessage(document.querySelector("#professional-message"), "Profissional cadastrado."); await loadAgendaOptions(); }
+  catch (error) { showMessage(document.querySelector("#professional-message"), error.message, true); }
+});
+serviceForm?.addEventListener("submit", async (event) => {
+  event.preventDefault(); const data = Object.fromEntries(new FormData(serviceForm)); data.duracaoMinutos = Number(data.duracaoMinutos);
+  try { await apiRequest("/api/servicos", { method: "POST", body: JSON.stringify(data) }); serviceForm.reset(); showMessage(document.querySelector("#service-message"), "Serviço cadastrado."); await loadAgendaOptions(); }
+  catch (error) { showMessage(document.querySelector("#service-message"), error.message, true); }
+});
 logoutButton.addEventListener("click", showSignedOut);
 closeClientDialogButton.addEventListener("click", () => clientDialog.close());
 closeAddressDialogButton.addEventListener("click", () => addressDialog.close());
 
 appendAddressEditor(clientAddresses);
+loadAgendaOptions().catch(() => showMessage(agendaFormMessage, "Não foi possível carregar profissionais e serviços.", true));
 if (accessToken) showSignedIn(); else showSignedOut();
