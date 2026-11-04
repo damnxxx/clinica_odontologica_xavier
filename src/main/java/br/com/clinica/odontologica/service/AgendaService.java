@@ -74,11 +74,12 @@ public class AgendaService {
                 if(jornada.diaSemana()!=diaSemana) continue;
                 LocalDateTime limite=dia.atTime(jornada.fim());
                 for(LocalDateTime inicio=dia.atTime(jornada.inicio()); !inicio.plusMinutes(duracao).isAfter(limite); inicio=inicio.plusMinutes(jornada.intervaloMinutos())) {
-                    LocalDateTime fim=inicio.plusMinutes(duracao);
-                    if(!inicio.isAfter(agora)) continue;
-                    boolean conflitoConsulta=consultas.stream().anyMatch(i->i.inicio().isBefore(fim)&&i.fim().isAfter(inicio));
-                    boolean conflitoBloqueio=bloqueios.stream().anyMatch(b->b.inicio().isBefore(fim)&&b.fim().isAfter(inicio));
-                    if(!conflitoConsulta&&!conflitoBloqueio) resultado.add(new HorarioDisponivelResponse(profissionalId,profissional,servicoId,servico,inicio,fim));
+                    LocalDateTime candidatoInicio=inicio;
+                    LocalDateTime candidatoFim=candidatoInicio.plusMinutes(duracao);
+                    if(!candidatoInicio.isAfter(agora)) continue;
+                    boolean conflitoConsulta=consultas.stream().anyMatch(i->i.inicio().isBefore(candidatoFim)&&i.fim().isAfter(candidatoInicio));
+                    boolean conflitoBloqueio=bloqueios.stream().anyMatch(b->b.inicio().isBefore(candidatoFim)&&b.fim().isAfter(candidatoInicio));
+                    if(!conflitoConsulta&&!conflitoBloqueio) resultado.add(new HorarioDisponivelResponse(profissionalId,profissional,servicoId,servico,candidatoInicio,candidatoFim));
                 }
             }
         }
