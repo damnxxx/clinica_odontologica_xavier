@@ -20,14 +20,30 @@
     </nav>
   </header>
   <main id="conteudo">
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">CLÍNICA ODONTOLÓGICA XAVIER</p>
-        <h1>Seu sorriso merece cuidado em cada etapa.</h1>
-        <p class="hero-lead">A saúde bucal começa com escuta, prevenção e um plano de cuidado feito para cada pessoa.</p>
-        <div class="hero-actions"><a class="button" href="/agendar.html">Solicitar atendimento <span aria-hidden="true">→</span></a><a class="text-link" href="/servicos.html">Conheça os serviços</a></div>
+    <section class="clinic-carousel" aria-label="Conheça os espaços da Clínica Xavier" aria-roledescription="carrossel">
+      <div class="carousel-slides">
+        <article class="carousel-slide is-active" role="group" aria-roledescription="slide" aria-label="1 de 2">
+          <!-- Foto da recepção em Beverly Hills: https://www.pexels.com/photo/modern-dental-office-in-beverly-hills-reception-area-38055772/ -->
+          <img src="/images/clinic-reception-beverly-hills.avif" alt="Recepção ampla e minimalista de uma clínica odontológica em Beverly Hills, Califórnia" fetchpriority="high">
+          <div class="carousel-shade"></div>
+          <div class="carousel-copy"><p class="eyebrow">CLÍNICA ODONTOLÓGICA XAVIER</p><h1>Um espaço pensado para você se sentir bem.</h1><p>Ambientes acolhedores e atendimento atencioso em cada etapa do seu cuidado.</p><a class="button button-light" href="/agendar.html">Agende sua consulta <span aria-hidden="true">→</span></a></div>
+        </article>
+        <article class="carousel-slide" role="group" aria-roledescription="slide" aria-label="2 de 2" aria-hidden="true" inert>
+          <!-- Foto do consultório em Beverly Hills: https://www.pexels.com/photo/modern-dental-office-interior-in-beverly-hills-38055774/ -->
+          <img src="/images/clinic-treatment-room-beverly-hills.avif" alt="Consultório odontológico amplo e contemporâneo em Beverly Hills, Califórnia" loading="lazy">
+          <div class="carousel-shade"></div>
+          <div class="carousel-copy"><p class="eyebrow">CUIDADO COM TECNOLOGIA</p><h2>Conforto e atenção em todos os detalhes.</h2><p>Conheça nossos espaços preparados para cuidar da sua saúde bucal com tranquilidade.</p><a class="button button-light" href="/sobre.html">Conheça a clínica <span aria-hidden="true">→</span></a></div>
+        </article>
       </div>
-      <div class="hero-art" aria-hidden="true"><div class="sun-shape"></div><div class="smile-card"><span class="tooth">✳</span><span>Bem-estar<br>começa no sorriso</span><span class="smile-line"></span></div><span class="art-dot dot-one"></span><span class="art-dot dot-two"></span></div>
+      <div class="carousel-controls" aria-label="Controles do carrossel">
+        <button class="carousel-arrow" type="button" data-carousel-previous aria-label="Imagem anterior">‹</button>
+        <div class="carousel-indicators" role="group" aria-label="Escolher imagem">
+          <button class="carousel-indicator is-active" type="button" aria-label="Ir para a imagem 1" aria-current="true"></button>
+          <button class="carousel-indicator" type="button" aria-label="Ir para a imagem 2"></button>
+        </div>
+        <button class="carousel-arrow" type="button" data-carousel-next aria-label="Próxima imagem">›</button>
+        <button class="carousel-toggle" type="button" data-carousel-toggle aria-label="Pausar reprodução">Ⅱ <span>Pausar</span></button>
+      </div>
     </section>
     <section class="trust-strip" aria-label="Nosso compromisso"><p><span aria-hidden="true">✦</span> Escuta com atenção</p><p><span aria-hidden="true">✦</span> Cuidado preventivo</p><p><span aria-hidden="true">✦</span> Orientação clara</p></section>
     <section class="content-section home-services">
@@ -43,5 +59,6 @@
     <p class="contact-note" id="contact-note">Rua Carlos Konvinski, 1100 · Jardins · São Paulo</p>
   </main>
   <footer class="site-footer"><a class="site-brand" href="/" aria-label="Clínica Xavier, início"><span class="brand-mark" aria-hidden="true">X</span><span><strong>Clínica Xavier</strong><small>Odontologia com cuidado</small></span></a><span>Clínica Odontológica Xavier</span><a href="/equipe.html">Acesso da equipe</a></footer>
+  <script src="/hero-carousel.js" defer></script>
 </body>
 </html>
