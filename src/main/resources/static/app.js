@@ -34,6 +34,8 @@ const availabilityForm = document.querySelector("#availability-form");
 const blockForm = document.querySelector("#block-form");
 const availabilityList = document.querySelector("#availability-list");
 const blockList = document.querySelector("#block-list");
+const adminTabs = [...document.querySelectorAll("[data-admin-tab]")];
+const adminPanels = [...document.querySelectorAll("[data-admin-panel]")];
 let accessToken = sessionStorage.getItem("accessToken") || "";
 let signedInEmail = sessionStorage.getItem("signedInEmail") || "";
 let editingClient = null;
@@ -66,9 +68,41 @@ function showSignedOut() {
   appointmentList?.replaceChildren();
 }
 
+function activateAdminTopic(topic, moveFocus = false, scrollToPanel = false) {
+  const activeTab = adminTabs.find((tab) => tab.dataset.adminTab === topic);
+  if (!activeTab) return;
+  const activePanel = adminPanels.find((panel) => panel.dataset.adminPanel === topic);
+
+  adminTabs.forEach((tab) => {
+    const selected = tab === activeTab;
+    tab.setAttribute("aria-selected", String(selected));
+    tab.tabIndex = selected ? 0 : -1;
+  });
+  adminPanels.forEach((panel) => {
+    panel.hidden = panel.dataset.adminPanel !== topic;
+  });
+  if (moveFocus) activeTab.focus();
+  if (scrollToPanel) activePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+adminTabs.forEach((tab, index) => {
+  tab.addEventListener("click", () => activateAdminTopic(tab.dataset.adminTab, false, true));
+  tab.addEventListener("keydown", (event) => {
+    let nextIndex = index;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") nextIndex = (index + 1) % adminTabs.length;
+    else if (event.key === "ArrowLeft" || event.key === "ArrowUp") nextIndex = (index - 1 + adminTabs.length) % adminTabs.length;
+    else if (event.key === "Home") nextIndex = 0;
+    else if (event.key === "End") nextIndex = adminTabs.length - 1;
+    else return;
+    event.preventDefault();
+    activateAdminTopic(adminTabs[nextIndex].dataset.adminTab, true, true);
+  });
+});
+
 function showSignedIn() {
   loginView.classList.add("hidden");
   appView.classList.remove("hidden");
+  activateAdminTopic("clientes");
   logoutButton.classList.remove("hidden");
   sessionLabel.textContent = signedInEmail;
   loadClients();

@@ -1,0 +1,72 @@
+[hidden] {
+  display: none !important;
+}
+
+.admin-topic-nav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 12px 0;
+  background: #f5f8f7;
+}
+
+.admin-topic {
+  display: grid;
+  gap: 5px;
+  min-height: 72px;
+  padding: 13px 16px;
+  border: 1px solid #dce7e3;
+  border-radius: 12px;
+  background: #fff;
+  color: #24483f;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-topic strong {
+  font-size: 13px;
+}
+
+.admin-topic small {
+  color: #71817d;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.admin-topic:hover {
+  border-color: #8eb9aa;
+}
+
+.admin-topic[aria-selected="true"] {
+  border-color: #126c61;
+  background: #e8f4f0;
+  box-shadow: inset 0 0 0 1px #126c61;
+}
+
+.admin-topic:focus-visible {
+  outline: 3px solid #e3a865;
+  outline-offset: 3px;
+}
+
+.admin-panel:focus {
+  outline: none;
+}
+
+.admin-panel {
+  scroll-margin-top: 105px;
+}
+
+.admin-panel > .panel:first-child {
+  margin-top: 0;
+}
+
+@media (max-width: 700px) {
+  .admin-topic-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
